@@ -47,6 +47,7 @@ def solution(name):
             if count_left < count_right:
                 answer += count_left
                 cursor = tmp_cursor_left
+
             else:
                 answer += count_right
                 cursor = tmp_cursor_right

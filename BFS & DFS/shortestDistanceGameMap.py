@@ -24,7 +24,6 @@ def solution(maps):
     n = len(maps)
     m = len(maps[0])
     bfs(maps)
-
     if maps[n-1][m-1] != 1:
         return maps[n-1][m-1]
     else:
