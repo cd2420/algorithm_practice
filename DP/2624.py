@@ -1,19 +1,17 @@
 # 동전 바꿔주기
 t = int(input())
 k = int(input())
-coin = [[0, 0]]
-for _ in range(k):
-    a, b = map(int, input().split())
-    coin.append([a, b])
-dp = [[0] * (t + 1) for _ in range(k + 1)]
+coins = [list(map(int, input().split())) for _ in range(k)]
+dp = [[0] * (t+1) for _ in range(k+1)]
 dp[0][0] = 1
 for i in range(1, k+1):
-    val, cnt = coin[i]
-    for j in range(t + 1):
+    coin, val = coins[i-1]
+    for j in range(t+1):
         dp[i][j] = dp[i-1][j]
-        for v in range(1, cnt + 1):
-            if j - v * val >= 0:
-                dp[i][j] += dp[i-1][j - v*val]
-            else:
+        for cnt in range(1, val+1):
+            check = coin * cnt
+            if check > j:
                 break
-print(dp[k][t])
+            dp[i][j] += dp[i-1][j-check]
+
+print(dp[-1][-1])
