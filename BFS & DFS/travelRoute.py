@@ -1,29 +1,37 @@
-def dfs(start, tickets, tmp, result_len):
+# 프로그래머스
+# 여행경로
+from collections import defaultdict
 
-    dept_list = []
-    for i in range(len(tickets)):
-        ticket = tickets[i]
-        if start == ticket[0]:
-            dept_list.append((ticket[1], i))
+def dfs(start, tree, lst):
+    now = tree[start]
 
-    if len(dept_list) == 0:
-        return tmp
-    else:
-        dept_list.sort()
-
-    for dept, idx in dept_list:
-        ticket = tickets.pop(idx)
-        tmp.append(dept)
-        check = dfs(dept, tickets, tmp, result_len)
-        if check:
-            if len(check) == result_len:
-                return tmp
-        tickets.insert(idx, ticket)
-        tmp.pop()
-
+    if not now:
+        if check(tree):
+            return lst
+        else :
+            return
+        
+    for i in range(len(now)):
+        nxt = now.pop(i)
+        lst.append(nxt)
+        data = dfs(nxt, tree, lst)
+        if data:
+            return data
+        lst.pop()    
+        now.insert(i, nxt)
+        
+def check(tree):
+    for t in tree:
+        if tree[t]:
+            return False
+    return True
 
 def solution(tickets):
-    answer = []
-    result_len = len(tickets) + 1
-    answer = dfs("ICN", tickets, ["ICN"], result_len)
+
+    tree = defaultdict(list)
+    for a,b in tickets:
+        tree[a].append(b)
+        tree[a].sort()
+    answer = ["ICN"]
+    dfs("ICN", tree, answer)
     return answer
