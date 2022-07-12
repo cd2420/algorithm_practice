@@ -5,24 +5,24 @@ from collections import deque
 directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 def solution(board):
-    answer = 0
+    answer = 1e9
     n = len(board)
-    check_cnt =[[0] * n for _ in range(n)]
     visited = list()
     start = set()
     start.add((0, 0))
     start.add((0, 1))
     visited.append(start)
     q = deque([])
-    q.append(start)
+    q.append((start, 0))
     while q :
-        a, b = q.popleft()
+        now , cnt = q.popleft()
+        a,b = now
         ax, ay = a
         bx, by = b
         if (ax == n-1 and ay == n-1) or (bx == n -1 and by == n-1):
-            answer = check_cnt[n-1][n-1]
+            answer = min(answer, cnt)
             break
-        cnt = min(check_cnt[ax][ay], check_cnt[bx][by])
+
         for dx, dy in directions:
             nax = ax + dx
             nay = ay + dy
@@ -37,10 +37,8 @@ def solution(board):
                 tmp.add((nbx, nby))
                 if tmp in visited:
                     continue
-                check_cnt[nax][nay] = cnt + 1
-                check_cnt[nbx][nby] = cnt + 1
                 visited.append(tmp)
-                q.append(tmp)
+                q.append((tmp, cnt + 1))
                 
         if ax - bx == 0:
             for dx, dy in [(1, 0), (-1, 0)]:
@@ -56,10 +54,8 @@ def solution(board):
                         tmp.add((nbx, nby))
                         if tmp in visited:
                             continue
-                        check_cnt[bx][by] = cnt + 1
-                        check_cnt[nbx][nby] = cnt + 1
                         visited.append(tmp)
-                        q.append(tmp)
+                        q.append((tmp, cnt + 1))
 
                 nbx = bx + dx
                 nby = by + dy
@@ -72,10 +68,8 @@ def solution(board):
                         tmp.add((nax, nay))
                         if tmp in visited:
                             continue
-                        check_cnt[ax][ay] = cnt + 1
-                        check_cnt[nax][nay] = cnt + 1
                         visited.append(tmp)
-                        q.append(tmp)
+                        q.append((tmp, cnt + 1))
         else :
             for dx, dy in [(0, 1), (0, -1)]:
                 nax = ax + dx
@@ -90,10 +84,8 @@ def solution(board):
                         tmp.add((nbx, nby))
                         if tmp in visited:
                             continue
-                        check_cnt[bx][by] = cnt + 1
-                        check_cnt[nbx][nby] = cnt + 1
                         visited.append(tmp)
-                        q.append(tmp)
+                        q.append((tmp, cnt + 1))
 
                 nbx = bx + dx
                 nby = by + dy
@@ -106,12 +98,6 @@ def solution(board):
                         tmp.add((nax, nay))
                         if tmp in visited:
                             continue
-                        check_cnt[ax][ay] = cnt + 1
-                        check_cnt[nax][nay] = cnt + 1
                         visited.append(tmp)
-                        q.append(tmp)
-    for c in check_cnt:
-        print(c)
-                
+                        q.append((tmp, cnt + 1))
     return answer
-solution([[0, 0, 0, 1, 1], [0, 0, 0, 1, 0], [0, 1, 0, 1, 1], [1, 1, 0, 0, 1], [0, 0, 0, 0, 0]])
