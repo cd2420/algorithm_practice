@@ -2,20 +2,25 @@
 # 외벽점검
 from itertools import permutations
 def solution(n, weak, dist):
-    answer = len(dist) + 1
-    check_weak = len(weak)
-    weak.extend([w + n for w in weak])
-    for w in range(check_weak):
-        for friends in list(permutations(dist)):
-            tmp_w = w
-            now = weak[tmp_w] + friends[0]
-            cnt = 1
-            for index in range(w, w+check_weak):
-                if now < weak[index]:
-                    cnt += 1
-                    if cnt > len(dist):
+    answer = 1e9
+    size = len(weak)
+    check_size = len(dist)
+    weak.sort()
+    weak = weak + [w + n for w in weak]
+
+    for i in range(size):
+        for friends in permutations(dist):
+            idx = 0
+            start = weak[i] + friends[idx]
+            for nxt in weak[i+1:i+size]:
+                if start >= nxt:
+                    continue
+                else :
+                    idx += 1
+                    if idx >= len(friends):
                         break
-                    now = weak[index] + friends[cnt-1]
-            answer = min(answer, cnt)
+                    start = nxt + friends[idx]
+            else:
+                answer = min(answer, idx+1)
             
-    return answer if answer <= len(dist) else -1
+    return answer if answer != 1e9 else -1
