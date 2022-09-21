@@ -1,47 +1,52 @@
 # 프로그래머스
 # 자물쇠와 열쇠
 
-def rotation90(arr):
-    x = len(arr)
-    tmp_arr = [[0] * x for _ in range(x)]
-    for i in range(x):
-        for j in range(len(arr[i])):
-            tmp_arr[j][x - i - 1] = arr[i][j]
-    return tmp_arr
+def rotation(arr):
+    n = len(arr)
+    result = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            result[j][n - i - 1] = arr[i][j]
+    return result
 
-def move(move_x, move_y, lock, key, lock_N):
-
-    for i in range(len(key)):
-        for j in  range(len(key[i])):
-            lock[move_x+i][move_y+j] += key[i][j]
-    tmp_check_lock = lock[lock_N: 2 * lock_N]
-    check_lock = []
-    for tmp in tmp_check_lock:
-        check_lock.append(tmp[lock_N: 2 * lock_N])
-    for check in check_lock:
-        for c in check:
-            if c != 1:
-                for i in range(len(key)):
-                    for j in  range(len(key[i])):
-                        lock[move_x+i][move_y+j] -= key[i][j]
+def find_key(key, graph, lock_len):
+    m = len(key)
+    n = len(graph)
+    for i in range(n - m + 1):
+        for j in range(n - m + 1):
+            move_key(key, graph, i, j)
+            if check(graph, lock_len):
+                return True
+            for x in range(m):
+                for y in range(m):
+                    graph[i+x][j+y] -= key[x][y]
+    return False
+                
+            
+def move_key(key, graph, x, y):
+    m = len(key)
+    for i in range(m):
+        for j in range(m):
+            graph[i+x][j+y] += key[i][j]
+            
+def check(graph, n):
+    for i in range(n, 2 * n):
+        for j in range(n, 2 * n):
+            if graph[i][j] != 1:
                 return False
     return True
     
-M = int(input())
-key = [list(map(int, input().split())) for _ in range(M)]
-N = int(input())
-lock = [list(map(int, input().split())) for _ in range(N)]
-tmp_N = len(lock) * 3
-tmp_arr = [[0] * tmp_N for _ in range(tmp_N)]
-for i in range(N):
-    for j in range(N):
-        tmp_arr[N+i][N+j] = lock[i][j]
+    
 
-for _ in range(4):
-    key = rotation90(key)
-    for move_num_i in range(tmp_N - M + 1):
-        for move_num_j in range(tmp_N - M + 1):
-            if move(move_num_i, move_num_j, tmp_arr, key, N):
-                print(True)
-print(False)
-    # result_idx = N, N*2
+def solution(key, lock):
+    n = len(lock)
+    graph = [[0] * 3 * n for _ in range(3 * n)]
+    for i in range(n):
+        for j in range(n):
+            graph[i+n][j+n] = lock[i][j]
+
+    for _ in range(4):
+        key = rotation(key)
+        if find_key(key, graph, n):
+            return True
+    return False
