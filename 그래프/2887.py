@@ -1,49 +1,45 @@
 # 행성 터널
 import heapq
+
 def find_parent(x):
-    if x == parent[x]:
+    if parent[x] == x:
         return x
     else :
         a = find_parent(parent[x])
         parent[x] = a
         return a
 
-def union_parent(a, b):
-    a = find_parent(a)
-    b = find_parent(b)
-    if a == b:
-        return True
-    if a > b:
-        parent[a] = b
-    else:
-        parent[b] = a
-    
-    return False
 
-n = int(input())
-graph = [list(map(int, input().split())) for _ in range(n)]
-for i in range(n):
-    graph[i].append(i)
-parent = [i for i in range(n)]
+N = int(input())
+dist = [list(map(int, input().split())) for _ in range(N)]
+dist = list(enumerate(dist))
+parent = [i for i in range(N)]
 
-sorted_x = sorted(graph, key=lambda x:x[0])
-sorted_y = sorted(graph, key=lambda x:x[1])
-sorted_z = sorted(graph, key=lambda x:x[2])
+dist_x = sorted(dist, key= lambda x:x[1][0])
+dist_y = sorted(dist, key= lambda x:x[1][1])
+dist_z = sorted(dist, key= lambda x:x[1][2])
 q = []
-for i in range(len(graph) - 1):
-    abs_x = abs(sorted_x[i][0] - sorted_x[i+1][0])
-    heapq.heappush(q, (abs_x, (sorted_x[i][3], sorted_x[i+1][3])))
+for i in range(1, N):
+    x = dist_x[i][1][0] - dist_x[i-1][1][0]
+    q.append((x, (dist_x[i][0], dist_x[i-1][0])))
 
-    abs_y = abs(sorted_y[i][1] - sorted_y[i+1][1])
-    heapq.heappush(q, (abs_y, (sorted_y[i][3], sorted_y[i+1][3])))
+    y = dist_y[i][1][1] - dist_y[i-1][1][1]
+    q.append((y, (dist_y[i][0], dist_y[i-1][0])))
 
-    abs_z = abs(sorted_z[i][2] - sorted_z[i+1][2])
-    heapq.heappush(q, (abs_z, (sorted_z[i][3], sorted_z[i+1][3])))
-answer = 0
+    z = dist_z[i][1][2] - dist_z[i-1][1][2]
+    q.append((z, (dist_z[i][0], dist_z[i-1][0])))
+heapq.heapify(q)
+result = 0
 while q:
     cnt, check = heapq.heappop(q)
-    a = check[0]
-    b = check[1]
-    if not union_parent(a, b):
-        answer += cnt
-print(answer)
+    a, b = check
+    a = find_parent(a)
+    b = find_parent(b)
+
+    if a != b:
+        result += cnt
+        if a > b:
+            parent[a] = b
+        else :
+            parent[b] = a
+print(result)
