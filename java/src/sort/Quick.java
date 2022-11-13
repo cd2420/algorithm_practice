@@ -3,6 +3,7 @@ package sort;
 import static sort.Base.numsSetting;
 import static sort.Base.show;
 
+// 퀵 sort
 public class Quick {
 
     public static void main(String[] args) {
