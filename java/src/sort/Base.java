@@ -1,5 +1,6 @@
 package sort;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -27,5 +28,10 @@ public class Base {
             System.out.print(n + " ");
         }
         System.out.println();
+    }
+
+    // 정렬 라이브러리 활용
+    public static void sort(int[] nums) {
+        Arrays.sort(nums);
     }
 }
